@@ -1,5 +1,9 @@
 # 🧩 Problem Solving — C++17 Algorithm Collection
 
+![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C?style=flat-square&logo=c%2B%2B&logoColor=white)
+![CI](https://github.com/bodysale5678az-svg/Portfolio-Cpp/actions/workflows/ci.yml/badge.svg)
+![Tests](https://img.shields.io/badge/tests-32%20passing-brightgreen?style=flat-square)
+
 A collection of **11 classic algorithm problems** solved in modern C++, each implemented efficiently and covered by a self-contained test runner.
 
 ```

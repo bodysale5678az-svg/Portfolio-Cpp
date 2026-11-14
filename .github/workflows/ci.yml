@@ -1,0 +1,42 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test:
+    name: Build & test all C++ projects
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install g++
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++
+
+      - name: Show compiler version
+        run: g++ --version
+
+      - name: Build & run Calculator
+        run: |
+          cd Calculator
+          g++ -std=c++17 -Wall -Wextra -Werror -O2 -Iinclude src/main.cpp -o calculator
+          echo "Calculator built successfully"
+
+      - name: Build & test ProblemSolving
+        run: |
+          cd ProblemSolving
+          g++ -std=c++17 -Wall -Wextra -Werror -O2 -Iinclude src/main.cpp -o problems
+          ./problems
+
+      - name: Build TaskManager
+        run: |
+          cd TaskManager
+          g++ -std=c++17 -Wall -Wextra -Werror -O2 -Iinclude src/main.cpp -o tasks
+          echo "TaskManager built successfully"

@@ -1,5 +1,8 @@
 # 🧮 Calculator — Recursive Descent Parser in C++17
 
+![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C?style=flat-square&logo=c%2B%2B&logoColor=white)
+![CI](https://github.com/bodysale5678az-svg/Portfolio-Cpp/actions/workflows/ci.yml/badge.svg)
+
 A command-line calculator that parses and evaluates **arbitrary arithmetic expressions** — not just `a op b`, but full expressions with operator precedence and parentheses.
 
 ```
