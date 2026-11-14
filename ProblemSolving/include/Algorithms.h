@@ -5,6 +5,9 @@
 #include <stdexcept>
 #include <algorithm>
 #include <deque>
+#include <sstream>
+#include <cctype>
+#include <climits>
 
 namespace ps {
 
@@ -136,6 +139,143 @@ public:
         a = std::abs(a); b = std::abs(b);
         while (b != 0) { int t = b; b = a % b; a = t; }
         return a;
+    }
+
+    // ---------- 12. Fibonacci (iterative) ----------
+    static long long fibIterative(int n) {
+        if (n < 0) throw std::invalid_argument("n must be >= 0");
+        long long a = 0, b = 1;
+        for (int i = 0; i < n; ++i) { long long t = a + b; a = b; b = t; }
+        return a;
+    }
+
+    // ---------- 13. Count vowels ----------
+    static int countVowels(const std::string& s) {
+        int count = 0;
+        for (char c : s) {
+            char l = (char)std::tolower((unsigned char)c);
+            if (l == 'a' || l == 'e' || l == 'i' || l == 'o' || l == 'u') ++count;
+        }
+        return count;
+    }
+
+    // ---------- 14. Sum of digits ----------
+    static int sumOfDigits(int n) {
+        n = std::abs(n);
+        int sum = 0;
+        while (n > 0) { sum += n % 10; n /= 10; }
+        return sum;
+    }
+
+    // ---------- 15. Max subarray sum (Kadane) ----------
+    static long long maxSubarraySum(const std::vector<int>& nums) {
+        if (nums.empty()) throw std::invalid_argument("empty array");
+        long long best = nums[0], current = nums[0];
+        for (size_t i = 1; i < nums.size(); ++i) {
+            current = std::max<long long>(nums[i], current + nums[i]);
+            best = std::max(best, current);
+        }
+        return best;
+    }
+
+    // ---------- 16. Move zeros to end ----------
+    static void moveZeros(std::vector<int>& nums) {
+        size_t write = 0;
+        for (size_t read = 0; read < nums.size(); ++read)
+            if (nums[read] != 0) std::swap(nums[write++], nums[read]);
+    }
+
+    // ---------- 17. Remove duplicates (sorted) ----------
+    static size_t removeDuplicates(std::vector<int>& nums) {
+        if (nums.empty()) return 0;
+        size_t write = 1;
+        for (size_t read = 1; read < nums.size(); ++read)
+            if (nums[read] != nums[write - 1]) nums[write++] = nums[read];
+        nums.resize(write);
+        return write;
+    }
+
+    // ---------- 18. Is prime ----------
+    static bool isPrime(int n) {
+        if (n < 2) return false;
+        if (n < 4) return true;
+        if (n % 2 == 0) return false;
+        for (int i = 3; (long long)i * i <= n; i += 2)
+            if (n % i == 0) return false;
+        return true;
+    }
+
+    // ---------- 19. Count words ----------
+    static int countWords(const std::string& s) {
+        int count = 0;
+        bool inWord = false;
+        for (char c : s) {
+            if (std::isspace((unsigned char)c)) inWord = false;
+            else if (!inWord) { inWord = true; ++count; }
+        }
+        return count;
+    }
+
+    // ---------- 20. Capitalize each word ----------
+    static std::string capitalizeWords(const std::string& s) {
+        std::string out = s;
+        bool newWord = true;
+        for (char& c : out) {
+            if (std::isspace((unsigned char)c)) newWord = true;
+            else if (newWord) { c = (char)std::toupper((unsigned char)c); newWord = false; }
+        }
+        return out;
+    }
+
+    // ---------- 21. Power (fast exponentiation) ----------
+    static long long power(long long base, int exp) {
+        if (exp < 0) throw std::invalid_argument("exp must be >= 0");
+        long long result = 1;
+        while (exp > 0) {
+            if (exp & 1) result *= base;
+            base *= base;
+            exp >>= 1;
+        }
+        return result;
+    }
+
+    // ---------- 22. Second largest ----------
+    static int secondLargest(const std::vector<int>& nums) {
+        if (nums.size() < 2) throw std::invalid_argument("need at least 2 elements");
+        int first = INT_MIN, second = INT_MIN;
+        for (int n : nums) {
+            if (n > first) { second = first; first = n; }
+            else if (n > second && n != first) second = n;
+        }
+        return second;
+    }
+
+    // ---------- 23. Rotate array left by k ----------
+    static void rotateLeft(std::vector<int>& nums, int k) {
+        if (nums.empty()) return;
+        int n = (int)nums.size();
+        k %= n;
+        std::reverse(nums.begin(), nums.begin() + k);
+        std::reverse(nums.begin() + k, nums.end());
+        std::reverse(nums.begin(), nums.end());
+    }
+
+    // ---------- 24. Missing number 0..n ----------
+    static int missingNumber(const std::vector<int>& nums) {
+        int n = (int)nums.size();
+        int expected = n * (n + 1) / 2;
+        int actual = 0;
+        for (int v : nums) actual += v;
+        return expected - actual;
+    }
+
+    // ---------- 25. Longest word ----------
+    static std::string longestWord(const std::string& s) {
+        std::istringstream stream(s);
+        std::string word, best;
+        while (stream >> word)
+            if (word.size() > best.size()) best = word;
+        return best;
     }
 };
 

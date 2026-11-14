@@ -102,6 +102,92 @@ int main() {
     checkEqual<int>("gcd(48, 18)", Algorithms::gcd(48, 18), 6);
     checkEqual<int>("gcd(17, 5)",  Algorithms::gcd(17, 5),  1);
 
+    header("12. Fibonacci (iterative)");
+    checkEqual<long long>("fibIter(0)",  Algorithms::fibIterative(0),  0);
+    checkEqual<long long>("fibIter(10)", Algorithms::fibIterative(10), 55);
+    checkEqual<long long>("fibIter(30)", Algorithms::fibIterative(30), 832040LL);
+    checkEqual<long long>("matches memo fib(20)",
+        Algorithms::fibIterative(20), Algorithms::fibonacci(20));
+
+    header("13. Count vowels");
+    checkEqual<int>("'hello' -> 2",             Algorithms::countVowels("hello"), 2);
+    checkEqual<int>("'EDUCATION' -> 5",         Algorithms::countVowels("EDUCATION"), 5);
+    checkEqual<int>("'xyz' -> 0",               Algorithms::countVowels("xyz"), 0);
+
+    header("14. Sum of digits");
+    checkEqual<int>("12345",  Algorithms::sumOfDigits(12345),  15);
+    checkEqual<int>("999",    Algorithms::sumOfDigits(999),    27);
+    checkEqual<int>("-456",   Algorithms::sumOfDigits(-456),   15);
+
+    header("15. Max subarray sum (Kadane)");
+    checkEqual<long long>("[-2,1,-3,4,-1,2,1,-5,4] = 6",
+        Algorithms::maxSubarraySum({ -2, 1, -3, 4, -1, 2, 1, -5, 4 }), 6);
+    checkEqual<long long>("[1,2,3,4] = 10",
+        Algorithms::maxSubarraySum({ 1, 2, 3, 4 }), 10);
+    checkEqual<long long>("[-5,-2,-9] = -2",
+        Algorithms::maxSubarraySum({ -5, -2, -9 }), -2);
+
+    header("16. Move zeros to end");
+    {
+        std::vector<int> v = { 0, 1, 0, 3, 12 };
+        Algorithms::moveZeros(v);
+        checkTrue("-> 1,3,12,0,0",
+            v == std::vector<int>({ 1, 3, 12, 0, 0 }));
+    }
+
+    header("17. Remove duplicates (sorted)");
+    {
+        std::vector<int> v = { 1, 1, 2, 2, 3, 4, 4 };
+        size_t n = Algorithms::removeDuplicates(v);
+        checkEqual<size_t>("unique count = 4", n, (size_t)4);
+        checkTrue("-> 1,2,3,4", v == std::vector<int>({ 1, 2, 3, 4 }));
+    }
+
+    header("18. Is prime");
+    checkTrue("2",       Algorithms::isPrime(2));
+    checkTrue("97",      Algorithms::isPrime(97));
+    checkEqual<bool>("1",   Algorithms::isPrime(1),  false);
+    checkEqual<bool>("100", Algorithms::isPrime(100), false);
+
+    header("19. Count words");
+    checkEqual<int>("'hello world' -> 2",        Algorithms::countWords("hello world"), 2);
+    checkEqual<int>("spaces -> 3",               Algorithms::countWords("  the quick  brown  "), 3);
+    checkEqual<int>("empty -> 0",                Algorithms::countWords(""), 0);
+
+    header("20. Capitalize words");
+    checkEqual<std::string>("'hello world'",
+        Algorithms::capitalizeWords("hello world"), std::string("Hello World"));
+    checkEqual<std::string>("'the quick brown'",
+        Algorithms::capitalizeWords("the quick brown"), std::string("The Quick Brown"));
+
+    header("21. Power (fast exponentiation)");
+    checkEqual<long long>("2^10",  Algorithms::power(2, 10),  1024);
+    checkEqual<long long>("3^5",   Algorithms::power(3, 5),   243);
+    checkEqual<long long>("5^0",   Algorithms::power(5, 0),   1);
+
+    header("22. Second largest");
+    checkEqual<int>("[3,1,4,1,5,9,2,6] -> 6",
+        Algorithms::secondLargest({ 3, 1, 4, 1, 5, 9, 2, 6 }), 6);
+    checkEqual<int>("[10,20,30] -> 20",
+        Algorithms::secondLargest({ 10, 20, 30 }), 20);
+
+    header("23. Rotate left");
+    {
+        std::vector<int> v = { 1, 2, 3, 4, 5 };
+        Algorithms::rotateLeft(v, 2);
+        checkTrue("k=2 -> 3,4,5,1,2", v == std::vector<int>({ 3, 4, 5, 1, 2 }));
+    }
+
+    header("24. Missing number");
+    checkEqual<int>("[3,0,1] -> 2",       Algorithms::missingNumber({ 3, 0, 1 }), 2);
+    checkEqual<int>("[0,1,2,4] -> 3",     Algorithms::missingNumber({ 0, 1, 2, 4 }), 3);
+
+    header("25. Longest word");
+    checkEqual<std::string>("'the quick brown fox'",
+        Algorithms::longestWord("the quick brown fox"), std::string("quick"));
+    checkEqual<std::string>("'I love programming'",
+        Algorithms::longestWord("I love programming"), std::string("programming"));
+
     // ---- summary ----
     std::cout << "\n==============================================\n";
     std::cout << "  PASSED: " << passed << "   FAILED: " << failed << "\n";

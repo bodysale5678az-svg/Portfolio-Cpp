@@ -1,94 +1,100 @@
-# 🧮 Calculator — Recursive Descent Parser in C++17
+# 🧮 Pocket Calculator — simple C++17
 
-![C++17](https://img.shields.io/badge/C%2B%2B-17-00599C?style=flat-square&logo=c%2B%2B&logoColor=white)
-![CI](https://github.com/bodysale5678az-svg/Portfolio-Cpp/actions/workflows/ci.yml/badge.svg)
-
-A command-line calculator that parses and evaluates **arbitrary arithmetic expressions** — not just `a op b`, but full expressions with operator precedence and parentheses.
+A small, readable calculator that behaves like a real pocket calculator:
+a screen, keys, memory and one operation at a time.
 
 ```
-> 2 + 3 * (4 - 1)
-  ((2.000000 + (3.000000 * (4.000000 - 1.000000))))
-  = 11.0000000000
+  ┌─────────────────────────────────┐
+  │                                  │
+  │                                  │
+  │                             56 │
+  └─────────────────────────────────┘
+   [7] [8] [9]  [/] [C]
+   [4] [5] [6]  [x] [CE]
+   [1] [2] [3]  [-] [%]
+   [0] [.] [=]  [+] [+/-]
+   [M+] [M-] [MR] [MC]   [q] quit
 ```
 
 ---
 
 ## ✨ Features
 
-- Full arithmetic: `+ - * / ^`
-- **Parentheses** with arbitrary nesting
-- **Correct operator precedence**: `^` > `* /` > `+ -`
-- **Right-associative power**: `2^3^2 = 512`
-- **Unary minus**: `-(5 + 5) = -10`
-- Decimal numbers
-- Clear error messages with position info
-- Division-by-zero protection
+- `+  -  ×  ÷` and `=`
+- **Chained operations** — `5 + 3 + 2 =` works like a real calculator
+- **Percentage** — `50 + 10 %` gives 55
+- **Sign flip** — `+/-`
+- **Memory** — `M+`, `M-`, `MR`, `MC` with an `M` indicator on screen
+- **`C`** clears everything, **`CE`** clears only the current entry
+- Division-by-zero is reported instead of crashing
 
 ---
 
-## 🏗️ How it works
+## 🎯 Design goal: readability first
 
-The parser is a classic **recursive-descent parser** that builds an **expression tree**:
+This project is deliberately **not** an expression parser. There is no
+tokenizer, no precedence table and no syntax tree — those belong to a
+different problem and make the code much harder to read.
 
-```
-Grammar:
-  expression := term   (('+' | '-') term)*
-  term       := power  (('*' | '/') power)*
-  power      := unary  ('^' unary)*          -- right-associative
-  unary      := '-' unary | primary
-  primary    := number | '(' expression ')'
-```
+Everything lives in one small class:
 
-The tree (`2 + 3 * 4`):
-
-```
-        +
-       / \
-      2   *
-         / \
-        3   4
-```
-
-Evaluation happens bottom-up through virtual `evaluate()` calls.
-
-### OOP design
-
-| Class | Responsibility |
+| Member | Purpose |
 |---|---|
-| `Node` | Abstract base — `evaluate()` and `toString()` are pure virtual |
-| `NumberNode` | A literal value |
-| `BinaryNode` | `+ - * / ^` with two children |
-| `NegateNode` | Unary minus |
-| `Parser` | Turns text into a `NodePtr` tree |
+| `accumulator` | the value on screen |
+| `pending` / `pendingOp` | the left-hand value and the waiting operation |
+| `entry` | the digits being typed |
+| `startNewNumber` | whether the next digit starts a fresh number |
+| `memory` | the `M` register |
 
-**Polymorphism in action:** `evaluate()` is called on the root node only — each node recurses into its children automatically. The evaluator never checks node types.
+The whole behaviour is driven by two methods:
+
+```cpp
+void apply(Op op);   // commit the current number, remember the operation
+double equals();     // resolve the pending operation
+```
 
 ---
 
-## 🚀 Build & Run
+## 🚀 Build & test
 
 ```bash
-g++ -std=c++17 -O2 -Iinclude src/main.cpp -o calculator
-./calculator
+# build
+g++ -std=c++17 -O2 -Iinclude src/main.cpp -o calc
+
+# run
+./calc
 ```
 
-Or with CMake:
+### Unit tests (10 checks)
+
 ```bash
-cmake -B build && cmake --build build && ./build/calculator
+g++ -std=c++17 -O2 -Iinclude tests/test_calculator.cpp -o test_calc
+./test_calc
+```
+
+```
+  [PASS] 7 * 8 = 56
+  [PASS] 2 + 3 = 5
+  [PASS] 10 - 4 = 6
+  [PASS] 6 / 4 = 1.5
+  [PASS] 5 + 3 + 2 = 10
+  [PASS] 50 + 10% = 55
+  [PASS] 3.14 entry = 3.14
+  [PASS] 5 +/- = -5
+  [PASS] M+ then MR = 9
+  [PASS] 1 / 0 throws = 1
+
+PASSED: 10  FAILED: 0
 ```
 
 ---
 
-## 💡 Examples
+## 📚 What it teaches
 
-| Input | Result |
-|---|---|
-| `2 + 3 * 4` | 14 |
-| `(2 + 3) * 4` | 20 |
-| `2 ^ 3 ^ 2` | 512 |
-| `-(5 + 5)` | -10 |
-| `10 / 4` | 2.5 |
-| `1 / 0` | error: Division by zero |
+- Splitting "what the user is typing" (`entry`) from "the value so far" (`accumulator`)
+- A tiny state machine: *entering a number* vs *waiting for the next number*
+- Why chained operations need the pending result committed early
+- Storing state in members instead of juggling parameters
 
 ---
 

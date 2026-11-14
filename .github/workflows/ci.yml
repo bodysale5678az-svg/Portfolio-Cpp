@@ -23,11 +23,16 @@ jobs:
       - name: Show compiler version
         run: g++ --version
 
-      - name: Build & run Calculator
+      - name: Build Calculator
         run: |
           cd Calculator
           g++ -std=c++17 -Wall -Wextra -Werror -O2 -Iinclude src/main.cpp -o calculator
-          echo "Calculator built successfully"
+
+      - name: Test Calculator
+        run: |
+          cd Calculator
+          g++ -std=c++17 -Wall -Wextra -Werror -O2 -Iinclude tests/test_calculator.cpp -o test_calc
+          ./test_calc
 
       - name: Build & test ProblemSolving
         run: |
@@ -39,4 +44,3 @@ jobs:
         run: |
           cd TaskManager
           g++ -std=c++17 -Wall -Wextra -Werror -O2 -Iinclude src/main.cpp -o tasks
-          echo "TaskManager built successfully"
